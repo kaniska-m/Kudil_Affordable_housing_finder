@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <title>KUDIL - Affordable Housing Finder</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/kudil.css">
+    <link rel="stylesheet" href="static/css/features.css">
+    <link rel="stylesheet" href="static/css/filters.css">
+    <link rel="stylesheet" href="static/css/chatbot.css">
+    <style>
+        :root {
+            --primary-green: #2E7D32;
+            --light-green: #4CAF50;
+            --pale-green: #E8F5E9;
+            --dark-green: #1B5E20;
+            --accent-green: #81C784;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: var(--dark-green);
+            padding: 0.5rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-brand img {
+            height: 60px;
+            width: auto;
+            margin-right: 1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            margin: 0 2rem;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--accent-green);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background-color: var(--accent-green);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 70%;
+        }
+
+        .nav-auth {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-left: auto;
+        }
+
+        .nav-auth .btn {
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-auth .btn.secondary {
+            background: transparent;
+            border: 2px solid var(--accent-green);
+            color: white;
+        }
+
+        .nav-auth .btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-auth .btn.primary {
+            background: var(--accent-green);
+            color: var(--dark-green);
+            border: none;
+        }
+
+        .nav-auth .btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Add margin to hero section to account for fixed navbar */
+        .hero {
+            margin-top: 70px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: white;
+            padding: 4rem 2rem;
+        }
+
+        .hero h1 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .search-bar {
+            background: white;
+            border-radius: 8px;
+            padding: 0.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .search-bar input {
+            border: none;
+            padding: 0.5rem;
+            flex: 1;
+        }
+
+        .search-bar .btn.primary {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 4rem 2rem;
+            background-color: var(--pale-green);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: var(--primary-green);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 1200px) {
+            .feature-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .about {
+            background-color: var(--pale-green);
+            padding: 4rem 2rem;
+        }
+
+        .about h2 {
+            color: var(--dark-green);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .sdg-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .sdg-item {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .sdg-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .sdg-item .image-container {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .sdg-item .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .sdg-item h4 {
+            color: var(--primary-green);
+            padding: 1rem;
+            margin: 0;
+        }
+
+        .sdg-item p {
+            padding: 0 1rem 1rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .initiative-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .initiative {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .initiative .image-container {
+            height: 60px;
+            overflow: hidden;
+        }
+
+        .initiative .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .initiative img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+        }
+
+        .sustainability-features {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            list-style: none;
+            padding: 0;
+        }
+
+        .features-list li {
+            display: flex;
+            align-items: center;
+            color: var(--primary-green);
+        }
+
+        .features-list li i {
+            margin-right: 0.5rem;
+            color: var(--light-green);
+        }
+
+        .footer {
+            background-color: var(--dark-green);
+            color: white;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            padding: 3rem 2rem;
+        }
+
+        .footer-bottom {
+            background-color: var(--primary-green);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .sdg-grid,
+            .initiative-grid,
+            .features-list,
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Chat Box Styles */
+        .chat-icon {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--primary-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .chat-icon:hover {
+            transform: scale(1.1);
+            background: var(--dark-green);
+        }
+
+        .chat-icon i {
+            color: white;
+            font-size: 24px;
+        }
+
+        .chat-box {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            height: 450px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .chat-box.active {
+            display: flex;
+        }
+
+        .chat-header {
+            background: var(--primary-green);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .close-chat {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .close-chat:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 0.8rem 1rem;
+            border-radius: 15px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .bot-message {
+            background: #f0f2f5;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .user-message {
+            background: var(--primary-green);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .chat-input {
+            padding: 1rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 0.95rem;
+        }
+
+        .chat-input input:focus {
+            border-color: var(--primary-green);
+        }
+
+        .send-btn {
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            background: var(--dark-green);
+            transform: scale(1.1);
+        }
+
+        .logo img {
+            height: 90px;
+            width: auto;
+        }
+
+        /* Awards Section Styles */
+        .awards-section {
+            padding: 4rem 0;
+            background: var(--pale-green);
+        }
+
+        .awards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .award-card {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .award-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .award-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .award-card h3 {
+            color: var(--dark-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .award-detail {
+            display: block;
+            margin-top: 0.5rem;
+            color: var(--primary-green);
+            font-size: 0.9rem;
+        }
+
+        /* Volunteers Section Styles */
+        .volunteers-section {
+            padding: 4rem 0;
+        }
+
+        .volunteers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .volunteer-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .volunteer-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .volunteer-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            object-position: center top;
+        }
+
+        .volunteer-card h3 {
+            color: var(--dark-green);
+            margin: 1rem;
+        }
+
+        .volunteer-role {
+            color: var(--primary-green);
+            margin: 0 1rem;
+            font-weight: 500;
+        }
+
+        .volunteer-contribution {
+            color: #666;
+            margin: 0.5rem 1rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .section-description {
+            text-align: center;
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        /* Language selector styles */
+        .language-selector {
+            position: relative;
+            margin-right: 20px;
+        }
+
+        .language-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px;
+        }
+
+        .language-btn i {
+            font-size: 16px;
+        }
+
+        .language-options {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+            min-width: 120px;
+            z-index: 1000;
+        }
+
+        .language-options.show {
+            display: block;
+        }
+
+        .language-options a {
+            color: #333;
+            padding: 8px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.2s;
+        }
+
+        .language-options a:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Map Section Styles */
+        .map-section {
+            padding: 2rem 0;
+            background: #f8f9fa;
+        }
+
+        .map-container {
+            position: relative;
+            display: flex;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        #map {
+            height: 600px;
+            flex: 1;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        .map-filters {
+            width: 300px;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--dark-green);
+        }
+
+        .location-btn {
+            background: var(--pale-green);
+            color: var(--dark-green);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .location-btn:hover {
+            background: var(--light-green);
+            color: white;
+        }
+
+        .filter-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .range-inputs {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .range-inputs input {
+            width: calc(50% - 0.5rem);
+        }
+
+        .apply-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .apply-btn:hover {
+            background: var(--dark-green);
+        }
+
+        /* Dark Mode Map Styles */
+        .dark-mode .map-filters {
+            background: #2d2d2d;
+        }
+
+        .dark-mode .filter-group label {
+            color: #bbb;
+        }
+
+        .dark-mode .filter-group input,
+        .dark-mode .filter-group select {
+            background: #333;
+            border-color: #444;
+            color: white;
+        }
+
+        .dark-mode .location-btn {
+            background: #333;
+            color: #fff;
+        }
+
+        .dark-mode .location-btn:hover {
+            background: var(--primary-green);
+        }
+
+        @media (max-width: 768px) {
+            .map-container {
+                flex-direction: column;
+            }
+
+            #map {
+                height: 400px;
+            }
+
+            .map-filters {
+                width: 100%;
+            }
+        }
+
+        /* Map popup styles */
+        .property-popup {
+            max-width: 250px;
+            padding: 10px;
+        }
+
+        .property-popup img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .property-popup h3 {
+            margin: 0 0 5px;
+            color: var(--dark-green);
+            font-size: 1.1rem;
+        }
+
+        .property-popup .address {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 5px 0;
+        }
+
+        .property-popup .price {
+            color: var(--primary-green);
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 5px 0;
+        }
+
+        .property-popup .eco-score {
+            color: #f39c12;
+            margin: 5px 0;
+        }
+
+        .property-popup .view-btn {
+            width: 100%;
+            padding: 8px;
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .property-popup .view-btn:hover {
+            background: var(--dark-green);
+        }
+
+        .volunteer-popup {
+            max-width: 200px;
+            padding: 10px;
+        }
+
+        .volunteer-popup h3 {
+            margin: 0 0 5px;
+            color: var(--dark-green);
+        }
+
+        .volunteer-popup .type {
+            display: inline-block;
+            padding: 3px 8px;
+            background: var(--pale-green);
+            color: var(--dark-green);
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-top: 8px;
+        }
+
+        /* Dark mode popup styles */
+        .dark-mode .property-popup,
+        .dark-mode .volunteer-popup {
+            background: #2d2d2d;
+            color: #fff;
+        }
+
+        .dark-mode .property-popup h3,
+        .dark-mode .volunteer-popup h3 {
+            color: #fff;
+        }
+
+        .dark-mode .property-popup .address {
+            color: #bbb;
+        }
+
+        .dark-mode .volunteer-popup .type {
+            background: #444;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="darkModeToggle()">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <img src="assets/images/kudil.png" alt="KUDIL Logo" class="logo">
+            <span></span>
+        </div>
+        <div class="nav-links">
+            <a href="#home" class="active">Home</a>
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#about">About</a>
+            <a href="pages/ngo_list.html">NGO Partners</a>
+            <a href="pages/buyer/search-filter.html">Search Properties</a>
+        </div>
+        <div class="nav-auth">
+            <div class="language-selector">
+                <button class="language-btn" onclick="toggleLanguage()">
+                    <i class="fas fa-globe"></i>
+                    EN
+                </button>
+                <div class="language-options" id="languageOptions">
+                    <a href="#" onclick="changeLanguage('en')">English</a>
+                    <a href="#" onclick="changeLanguage('ta')">தமிழ்</a>
+                    <a href="#" onclick="changeLanguage('hi')">हिंदी</a>
+                </div>
+            </div>
+            <button class="btn secondary" onclick="window.location.href='pages/auth/login.html'">Login</button>
+            <button class="btn primary" onclick="window.location.href='pages/auth/signup.html'">Sign Up</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Find Your Dream Home</h1>
+            <p>Discover affordable and sustainable housing options that match your needs</p>
+            <div class="search-bar">
+                <input type="text" placeholder="Enter location or property type...">
+                <button class="btn primary" onclick="window.propertyFilters.showFilters()">
+                    <i class="fas fa-filter"></i> Search
+                </button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="assets/images/modernhome.jpg" alt="Modern sustainable home">
+        </div>
+    </section>
+
+    <!-- Map Search Section -->
+    <section id="map-search" class="map-section">
+        <div class="map-container">
+            <div id="map"></div>
+            <div class="map-filters">
+                <div class="filter-header">
+                    <h3>Search Filters</h3>
+                    <button id="use-location" class="location-btn">
+                        <i class="fas fa-location-dot"></i> Use My Location
+                    </button>
+                </div>
+                <div class="filter-group">
+                    <label>Location</label>
+                    <input type="text" id="location-search" placeholder="Enter location...">
+                </div>
+                <div class="filter-group">
+                    <label>Price Range</label>
+                    <div class="range-inputs">
+                        <input type="number" id="min-price" placeholder="Min">
+                        <span>-</span>
+                        <input type="number" id="max-price" placeholder="Max">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>Eco-Score</label>
+                    <select id="eco-score">
+                        <option value="">Any</option>
+                        <option value="high">High (4-5⭐)</option>
+                        <option value="medium">Medium (3⭐)</option>
+                        <option value="low">Low (1-2⭐)</option>
+                    </select>
+                </div>
+                <button id="apply-filters" class="apply-btn">Apply Filters</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Properties -->
+    <section id="featured" class="featured-properties">
+        <div class="container">
+            <h2>Featured Properties</h2>
+            <div class="property-grid" id="featuredProperties">
+                <!-- Properties will be loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- EcoLiving Awards Section -->
+    <section class="awards-section">
+        <div class="container">
+            <h2>EcoLiving Awards</h2>
+            <p class="section-description">Recognizing excellence in sustainable housing initiatives</p>
+            
+            <div class="awards-grid">
+                <div class="award-card">
+                    <div class="award-icon">🏆</div>
+                    <h3>Best Green Building</h3>
+                    <p>Green Valley Apartments</p>
+                    <span class="award-detail">Energy efficiency rating: A+</span>
+                </div>
+                <div class="award-card">
+                    <div class="award-icon">🌟</div>
+                    <h3>Community Impact</h3>
+                    <p>Eco Homes Project</p>
+                    <span class="award-detail">500+ families benefited</span>
+                </div>
+                <div class="award-card">
+                    <div class="award-icon">🌿</div>
+                    <h3>Innovation Award</h3>
+                    <p>Smart City Initiative</p>
+                    <span class="award-detail">Revolutionary water conservation</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Volunteers Section -->
+    <section class="volunteers-section">
+        <div class="container">
+            <h2>Our Top Volunteers</h2>
+            <p class="section-description">Meet the champions of sustainable housing</p>
+            
+            <div class="volunteers-grid">
+                <div class="volunteer-card">
+                    <img src="assets/images/meiya.jpg" alt="Volunteer 1" class="volunteer-image">
+                    <h3>Meiyazhagan</h3>
+                    <p class="volunteer-role">Community Leader</p>
+                    <p class="volunteer-contribution">Led 50+ housing projects</p>
+                </div>
+                <div class="volunteer-card">
+                    <img src="assets/images/kundh.jpg" alt="Volunteer 2" class="volunteer-image">
+                    <h3>Kundhavai</h3>
+                    <p class="volunteer-role">Green Building Expert</p>
+                    <p class="volunteer-contribution">Trained 200+ builders</p>
+                </div>
+                <div class="volunteer-card">
+                    <img src="assets/images/surya.jpg" alt="Volunteer 3" class="volunteer-image">
+                    <h3>Surya</h3>
+                    <p class="volunteer-role">Sustainability Advocate</p>
+                    <p class="volunteer-contribution">Saved 1M+ water annually</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <h2>Why Choose KUDIL?</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <img src="assets/icons/sdg1.svg" alt="SDG 1">
+                <h3>Affordable Housing</h3>
+                <p>Find homes that fit your budget with flexible payment options</p>
+            </div>
+            <div class="feature-card">
+                <img src="assets/icons/sdg11.svg" alt="SDG 11">
+                <h3>Sustainable Living</h3>
+                <p>Eco-friendly homes with green features and certifications</p>
+            </div>
+            <div class="feature-card">
+                <img src="assets/icons/sdg10.svg" alt="SDG 10">
+                <h3>Equal Access</h3>
+                <p>Fair and transparent housing opportunities for everyone</p>
+            </div>
+            <div class="feature-card">
+                <img src="assets/icons/sdg1.svg" alt="Smart Home">
+                <h3>Smart Features</h3>
+                <p>Modern homes equipped with smart technology and automation</p>
+            </div>
+            <div class="feature-card">
+                <img src="assets/icons/sdg11.svg" alt="Community">
+                <h3>Strong Community</h3>
+                <p>Join vibrant, inclusive communities with shared values</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="how-it-works">
+        <h2>How It Works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>Search</h3>
+                <p>Find properties using our advanced filters and map search</p>
+            </div>
+            <div class="step">
+                <div class="step-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <h3>Compare</h3>
+                <p>Compare properties side by side to make the best choice</p>
+            </div>
+            <div class="step">
+                <div class="step-icon">
+                    <i class="fas fa-key"></i>
+                </div>
+                <h3>Move In</h3>
+                <p>Schedule viewings and finalize your new home</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <h2>About KUDIL</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <p class="mission-statement">KUDIL is committed to making sustainable and affordable housing accessible to everyone, aligning with the United Nations Sustainable Development Goals to create lasting positive social impact.</p>
+                
+                <div class="sdg-focus">
+                    <h3>Our Commitment to SDG 11: Sustainable Cities and Communities</h3>
+                    
+                    <div class="sdg-grid">
+                        <div class="sdg-item">
+                            <div class="image-container">
+                                <img src="assets/images/greeeenvalley.jpg" alt="Sustainable Communities">
+                            </div>
+                            <h4>Inclusive Housing</h4>
+                            <p>Ensuring adequate, safe, and affordable housing for all while reducing environmental impact.</p>
+                        </div>
+                        <div class="sdg-item">
+                            <div class="image-container">
+                                <img src="assets/images/greenvalley.jpg" alt="Green Building">
+                            </div>
+                            <h4>Green Building Practices</h4>
+                            <p>Promoting energy-efficient construction and sustainable building materials.</p>
+                        </div>
+                        <div class="sdg-item">
+                            <div class="image-container">
+                                <img src="assets/images/inclusive-housing.png" alt="Smart Features">
+                            </div>
+                            <h4>Smart Features</h4>
+                            <p>Modern technology integration for enhanced living experience and energy efficiency.</p>
+                        </div>
+                        <div class="sdg-item">
+                            <div class="image-container">
+                                <img src="assets/images/lush-community-garden-stockcake.jpg" alt="Strong Community">
+                            </div>
+                            <h4>Strong Community</h4>
+                            <p>Building vibrant, supportive neighborhoods that foster social connections.</p>
+                        </div>
+                        <div class="sdg-item">
+                            <div class="image-container">
+                                <img src="assets/images/smart-city.png" alt="Smart City">
+                            </div>
+                            <h4>Smart Infrastructure</h4>
+                            <p>Integrating technology for better resource management and community living.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sdg-initiatives">
+                    <h3>Our SDG Impact Areas</h3>
+                    <div class="initiative-grid">
+                        <div class="initiative">
+                            <div class="image-container">
+                                <img src="assets/images/inclusive-housing.png" alt="SDG 1 - No Poverty">
+                            </div>
+                            <div class="initiative-content">
+                                <h4>SDG 1: No Poverty</h4>
+                                <p>Making housing affordable through innovative financing and community-based solutions.</p>
+                            </div>
+                        </div>
+                        <div class="initiative">
+                            <div class="image-container">
+                                <img src="assets/images/public-transport.jpg" alt="SDG 10 - Reduced Inequalities">
+                            </div>
+                            <div class="initiative-content">
+                                <h4>SDG 10: Reduced Inequalities</h4>
+                                <p>Creating equal housing opportunities regardless of socioeconomic background.</p>
+                            </div>
+                        </div>
+                        <div class="initiative">
+                            <div class="image-container">
+                                <img src="assets/images/lush-community-garden-stockcake.jpg" alt="SDG 11 - Sustainable Cities">
+                            </div>
+                            <div class="initiative-content">
+                                <h4>SDG 11: Sustainable Cities</h4>
+                                <p>Building resilient communities with access to green spaces and sustainable infrastructure.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sustainability-features">
+                    <h3>Key Sustainability Features</h3>
+                    <ul class="features-list">
+                        <li><i class="fas fa-solar-panel"></i> Renewable Energy Integration</li>
+                        <li><i class="fas fa-recycle"></i> Waste Management Systems</li>
+                        <li><i class="fas fa-leaf"></i> Green Spaces and Urban Farming</li>
+                        <li><i class="fas fa-bus"></i> Access to Public Transportation</li>
+                        <li><i class="fas fa-hand-holding-water"></i> Water Conservation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>KUDIL</h3>
+                <p>Making sustainable housing accessible for everyone</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="#home">Home</a>
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#about">About</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Email: info@kudil.com</p>
+                <p>Phone: +91 1234567890</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 KUDIL. Made with <i class="fas fa-heart" style="color: #ff4d4d;"></i> by team LlamaNotLmao. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Chat Icon and Box -->
+    <div class="chat-icon" id="chatIcon">
+        <i class="fas fa-comments"></i>
+    </div>
+
+    <div class="chat-box" id="chatBox">
+        <div class="chat-header">
+            <h3>KUDIL Assistant</h3>
+            <button class="close-chat" id="closeChat">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">
+                Hello! 👋 How can I help you find your sustainable dream home today?
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="messageInput" placeholder="Type your message...">
+            <button class="send-btn" id="sendMessage">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="static/js/map.js"></script>
+    <script>
+        // Initialize all components
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize chatbot
+            const chatIcon = document.getElementById('chatIcon');
+            const chatBox = document.getElementById('chatBox');
+            const closeChat = document.getElementById('closeChat');
+            const messageInput = document.getElementById('messageInput');
+            const sendMessage = document.getElementById('sendMessage');
+            const chatMessages = document.getElementById('chatMessages');
+
+            // Toggle chat box
+            chatIcon.addEventListener('click', () => {
+                chatBox.classList.add('active');
+            });
+
+            closeChat.addEventListener('click', () => {
+                chatBox.classList.remove('active');
+            });
+
+            // Send message function
+            function addMessage(message, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+                messageDiv.textContent = message;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            // Handle send message
+            function handleSendMessage() {
+                const message = messageInput.value.trim();
+                if (message) {
+                    addMessage(message, true);
+                    messageInput.value = '';
+                    
+                    // Simulate bot response
+                    setTimeout(() => {
+                        addMessage("Thank you for your message! Our team will get back to you soon.");
+                    }, 1000);
+                }
+            }
+
+            // Send message on button click
+            sendMessage.addEventListener('click', handleSendMessage);
+
+            // Send message on Enter key
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleSendMessage();
+                }
+            });
+
+            // Initialize map
+            if (window.mapSearch) {
+                window.mapSearch.initializeMap('property-map');
+            }
+
+            // Load properties
+            async function loadFeaturedProperties() {
+                const grid = document.querySelector('.property-grid');
+                // Simulated property data
+                const properties = [
+                    {
+                        image: 'assets/images/greeeenvalley.jpg',
+                        title: 'Green Valley Apartments',
+                        price: '&#x20B9;45,00,000',
+                        location: 'Electronic City, Bangalore',
+                        bedrooms: 2,
+                        bathrooms: 2,
+                        area: '1200 sq.ft',
+                        sustainability: ['Solar Panels', 'Rainwater Harvesting'],
+                        id: 1
+                    },
+                    {
+                        image: 'assets/images/greenvalley.jpg',
+                        title: 'Eco Homes',
+                        price: '&#x20B9;55,00,000',
+                        location: 'Whitefield, Bangalore',
+                        bedrooms: 3,
+                        bathrooms: 2,
+                        area: '1500 sq.ft',
+                        sustainability: ['Green Building', 'Waste Management'],
+                        id: 2
+                    }
+                ];
+
+                properties.forEach(property => {
+                    const card = `
+                        <div class="property-card">
+                            <div class="property-image">
+                                <img src="${property.image}" alt="${property.title}">
+                                <span class="price">${property.price}</span>
+                                <button class="favorite"><i class="fas fa-heart"></i></button>
+                            </div>
+                            <div class="property-info">
+                                <h3>${property.title}</h3>
+                                <p class="location"><i class="fas fa-map-marker-alt"></i> ${property.location}</p>
+                                <div class="features">
+                                    <span><i class="fas fa-bed"></i> ${property.bedrooms} Beds</span>
+                                    <span><i class="fas fa-bath"></i> ${property.bathrooms} Baths</span>
+                                    <span><i class="fas fa-vector-square"></i> ${property.area}</span>
+                                </div>
+                                <div class="sustainability-features">
+                                    ${property.sustainability.map(feature => `
+                                        <span class="eco-tag">${feature}</span>
+                                    `).join('')}
+                                </div>
+                                <div class="property-actions">
+                                    <button class="btn secondary" onclick="window.propertyComparison.addToComparison('${property.title}')">
+                                        <i class="fas fa-balance-scale"></i> Compare
+                                    </button>
+                                    <button class="btn primary" onclick="window.location.href='pages/buyer/property-details.html?id=${property.id}'">
+                                        <i class="fas fa-eye"></i> View Details
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    grid.insertAdjacentHTML('beforeend', card);
+                });
+            }
+
+            loadFeaturedProperties();
+        });
+
+        function toggleLanguage() {
+            const options = document.getElementById('languageOptions');
+            options.classList.toggle('show');
+        }
+
+        function changeLanguage(lang) {
+            // Add language change logic here
+            const languageMap = {
+                'en': 'English',
+                'ta': 'தமிழ்',
+                'hi': 'हिंदी'
+            };
+            
+            document.querySelector('.language-btn').innerHTML = `
+                <i class="fas fa-globe"></i>
+                ${lang.toUpperCase()}
+            `;
+            
+            document.getElementById('languageOptions').classList.remove('show');
+            // You can add more language change logic here
+        }
+
+        // Close language options when clicking outside
+        document.addEventListener('click', function(event) {
+            const selector = document.querySelector('.language-selector');
+            const options = document.getElementById('languageOptions');
+            
+            if (!selector.contains(event.target)) {
+                options.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
