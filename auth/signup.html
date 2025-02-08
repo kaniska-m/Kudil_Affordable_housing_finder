@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Kudil</title>
+    <link rel="stylesheet" href="../../styles/auth.css">
+    <link rel="stylesheet" href="../../styles/eco-rewards.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Noto+Sans+Devanagari&family=Noto+Sans+Tamil&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Eco Particles Animation -->
+    <div class="eco-particles"></div>
+
+    <div class="auth-container">
+        <!-- Left Side - Eco Illustration -->
+        <div class="auth-left">
+            <div class="eco-illustration">
+                <div class="sustainable-city"></div>
+                <div class="leaf leaf-1"></div>
+                <div class="leaf leaf-2"></div>
+                <div class="leaf leaf-3"></div>
+            </div>
+            <div class="eco-message">
+                <h2>Join Our Sustainable Housing Community</h2>
+                <p>Be part of the change towards eco-friendly and affordable housing solutions.</p>
+                <div class="eco-stats">
+                    <div class="stat">
+                        <span class="number">10K+</span>
+                        <span class="label">Green Homes</span>
+                    </div>
+                    <div class="stat">
+                        <span class="number">30%</span>
+                        <span class="label">Energy Saved</span>
+                    </div>
+                    <div class="stat">
+                        <span class="number">5K+</span>
+                        <span class="label">Happy Families</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Sign Up Form -->
+        <div class="auth-right">
+            <div class="login-container">
+                <div class="auth-header">
+                    <a href="../../index.html" class="logo">
+                        <img src="../../assets/images/kudil.png" alt="Kudil Logo">
+                    </a>
+                    <h1>Create Your Account</h1>
+                    <p>Join us in making housing sustainable and affordable</p>
+                </div>
+
+                <form class="auth-form" id="signupForm">
+                    <!-- User Type Selection -->
+                    <div class="user-type-section">
+                        <label>I want to:</label>
+                        <div class="user-type-options">
+                            <label class="user-type-card">
+                                <input type="radio" name="userType" value="buyer" checked>
+                                <div class="card-content">
+                                    <div class="icon-circle">
+                                        <i class="fas fa-home"></i>
+                                    </div>
+                                    <span>Buy a Home</span>
+                                    <p>Find sustainable properties</p>
+                                </div>
+                            </label>
+                            <label class="user-type-card">
+                                <input type="radio" name="userType" value="seller">
+                                <div class="card-content">
+                                    <div class="icon-circle">
+                                        <i class="fas fa-key"></i>
+                                    </div>
+                                    <span>Sell a Home</span>
+                                    <p>List sustainable properties</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Personal Information -->
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <div class="input-container">
+                            <i class="fas fa-user input-icon"></i>
+                            <input type="text" id="fullName" name="fullName" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <div class="input-container">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <div class="input-container">
+                            <i class="fas fa-phone input-icon"></i>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-container">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="password" name="password" required>
+                            <button type="button" class="toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <div class="input-container">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" id="confirmPassword" name="confirmPassword" required>
+                            <button type="button" class="toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Sustainability Oath -->
+                    <div class="sustainability-oath">
+                        <h3>Sustainability Oath</h3>
+                        <div class="oath-content">
+                            <p>I solemnly pledge to:</p>
+                            <ul>
+                                <li>Prioritize sustainable and eco-friendly housing solutions</li>
+                                <li>Support the development of green communities</li>
+                                <li>Promote energy-efficient housing practices</li>
+                                <li>Respect and protect the environment in all housing decisions</li>
+                                <li>Contribute to making housing both sustainable and affordable</li>
+                            </ul>
+                        </div>
+                        <label class="oath-checkbox">
+                            <input type="checkbox" required>
+                            <span class="checkmark"></span>
+                            I accept the Sustainability Oath and commit to these principles
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="terms-checkbox">
+                            <input type="checkbox" required>
+                            <span class="checkmark"></span>
+                            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="auth-button">
+                        Create Account
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="login.html">Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle password visibility
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.previousElementSibling;
+                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                input.setAttribute('type', type);
+                this.querySelector('i').classList.toggle('fa-eye');
+                this.querySelector('i').classList.toggle('fa-eye-slash');
+            });
+        });
+
+        // Create floating leaf particles
+        function createParticle() {
+            const particles = document.querySelector('.eco-particles');
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDuration = Math.random() * 3 + 2 + 's';
+            particles.appendChild(particle);
+            setTimeout(() => particle.remove(), 5000);
+        }
+
+        setInterval(createParticle, 300);
+
+        // Form submission
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const button = this.querySelector('.auth-button');
+            button.classList.add('loading');
+            button.textContent = 'Creating Account...';
+            
+            // Simulate account creation
+            setTimeout(() => {
+                const userType = document.querySelector('input[name="userType"]:checked').value;
+                window.location.href = `../${userType}/dashboard.html`;
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Affordable Housing Finder</title>
+    <link rel="stylesheet" href="../../styles/global.css">
+    <link rel="stylesheet" href="../../styles/auth.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="eco-particles" id="eco-particles"></div>
+    
+    <div class="auth-container">
+        <div class="auth-left">
+            <div class="eco-illustration">
+                <div class="leaf leaf-1"></div>
+                <div class="leaf leaf-2"></div>
+                <div class="leaf leaf-3"></div>
+                <div class="sustainable-city"></div>
+            </div>
+            <div class="eco-message">
+                <h2>Building Sustainable Communities</h2>
+                <p>Join us in creating affordable, eco-friendly housing solutions for a better tomorrow.</p>
+                <div class="eco-stats">
+                    <div class="stat">
+                        <span class="number">500+</span>
+                        <span class="label">Green Homes</span>
+                    </div>
+                    <div class="stat">
+                        <span class="number">30%</span>
+                        <span class="label">Energy Saved</span>
+                    </div>
+                    <div class="stat">
+                        <span class="number">1000+</span>
+                        <span class="label">Happy Families</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="auth-right">
+            <div class="login-container">
+                <div class="auth-header">
+                    <a href="../../index.html" class="logo">
+                        <img src="../../assets/images/kudil.png" alt="Affordable Housing Finder Logo">
+                    </a>
+                    <h1>Welcome Back</h1>
+                    <p>Continue your journey towards sustainable living</p>
+                </div>
+
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <div class="input-container">
+                            <img src="../../assets/icons/email.svg" alt="Email" class="input-icon">
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-container">
+                            <img src="../../assets/icons/lock.svg" alt="Password" class="input-icon">
+                            <input type="password" id="password" name="password" required>
+                            <button type="button" class="toggle-password">
+                                <img src="../../assets/icons/eye.svg" alt="Toggle Password">
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="user-type-section">
+                        <label>I am a:</label>
+                        <div class="user-type-options">
+                            <label class="user-type-card">
+                                <input type="radio" name="userType" value="buyer" checked>
+                                <div class="card-content">
+                                    <div class="icon-circle">
+                                        <img src="../../assets/icons/home-search.svg" alt="Buyer">
+                                    </div>
+                                    <span>Home Seeker</span>
+                                    <p>Find your sustainable dream home</p>
+                                </div>
+                            </label>
+                            <label class="user-type-card">
+                                <input type="radio" name="userType" value="seller">
+                                <div class="card-content">
+                                    <div class="icon-circle">
+                                        <img src="../../assets/icons/home-sell.svg" alt="Seller">
+                                    </div>
+                                    <span>Property Owner</span>
+                                    <p>List your eco-friendly property</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group remember-forgot">
+                        <label class="remember-me">
+                            <input type="checkbox" name="remember">
+                            <span class="checkmark"></span>
+                            <span>Remember me</span>
+                        </label>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
+
+                    <button type="submit" class="auth-button">
+                        <span>Sign In</span>
+                        <svg class="button-arrow" viewBox="0 0 24 24">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </form>
+
+                <div class="social-login">
+                    <div class="separator">
+                        <span>Or continue with</span>
+                    </div>
+                    <div class="social-buttons">
+                        <button class="social-button google">
+                            <img src="../../assets/icons/google.svg" alt="Google">
+                            <span>Google</span>
+                        </button>
+                        <button class="social-button facebook">
+                            <img src="../../assets/icons/facebook.svg" alt="Facebook">
+                            <span>Facebook</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+            
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function createParticle() {
+            const particles = document.getElementById('eco-particles');
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            particles.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 5000);
+        }
+
+        setInterval(createParticle, 300);
+
+        // Form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userType = document.querySelector('input[name="userType"]:checked').value;
+            
+            // Redirect based on user type
+            if (userType === 'buyer') {
+                window.location.href = '../buyer/dashboard.html';
+            } else if (userType === 'seller') {
+                window.location.href = '../seller/dashboard.html';
+            }
+        });
+
+        // Password toggle
+        document.querySelector('.toggle-password').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            const eyeIcon = this.querySelector('img');
+            eyeIcon.src = type === 'password' ? '../../assets/icons/eye.svg' : '../../assets/icons/eye-off.svg';
+        });
+    </script>
+</body>
+</html>
